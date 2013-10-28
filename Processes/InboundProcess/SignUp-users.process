@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx2="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd2" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd">
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd" schemaLocation="/Resources/Schemas/Login.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd2"/>
+    <pd:name>Processes/InboundProcess/SignUp-users.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx:root"/>
+    <pd:startX>146</pd:startX>
+    <pd:startY>83</pd:startY>
+    <pd:returnBindings>
+        <pfx:loginoutput>
+            <xsl:choose>
+                <xsl:when test="$Invoke-REST-API/ns:RESTOutput/StatusCode=404">
+                    <pfx:status>
+                        <xsl:value-of select="&quot;Login UnSuccessFul&quot;"/>
+                    </pfx:status>
+                </xsl:when>
+                <xsl:otherwise>
+                    <pfx:status>
+                        <xsl:value-of select="&quot;Login successful&quot;"/>
+                    </pfx:status>
+                </xsl:otherwise>
+            </xsl:choose>
+        </pfx:loginoutput>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType ref="pfx:loginoutput"/>
+    <pd:endX>888</pd:endX>
+    <pd:endY>84</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1382947671397</pd:targetNamespace>
+    <pd:activity name="Start_logger">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>268</pd:x>
+        <pd:y>84</pd:y>
+        <config>
+            <processName>/CLEP/Common_Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <event>
+                <xsl:attribute name="timestamp">
+                    <xsl:value-of select="current-dateTime()"/>
+                </xsl:attribute>
+                <xsl:attribute name="description">
+                    <xsl:value-of select="&quot;Successfully started signup process&quot;"/>
+                </xsl:attribute>
+            </event>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="End_Loggger">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>690</pd:x>
+        <pd:y>86</pd:y>
+        <config>
+            <processName>/CLEP/Common_Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <event>
+                <xsl:attribute name="timestamp">
+                    <xsl:value-of select="current-dateTime()"/>
+                </xsl:attribute>
+                <xsl:attribute name="description">
+                    <xsl:value-of select="&quot;Successfully completed signup process&quot;"/>
+                </xsl:attribute>
+            </event>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Invoke REST API">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>425</pd:x>
+        <pd:y>83</pd:y>
+        <config>
+            <restMethodUI>GET</restMethodUI>
+            <restResponseType>JSON</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="username" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="password" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string"/>
+                                        <xsd:element name="X-Parse-REST-API-Key" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <URI>
+                    <xsl:value-of select="&quot;https://api.parse.com/1/login&quot;"/>
+                </URI>
+                <ns:Parameters>
+                    <Query>
+                        <username>
+                            <xsl:value-of select="$Start/pfx:root/pfx:username"/>
+                        </username>
+                        <password>
+                            <xsl:value-of select="$Start/pfx:root/pfx:password"/>
+                        </password>
+                    </Query>
+                    <Header>
+                        <X-Parse-Application-Id>
+                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Parse/ApplicationID"/>
+                        </X-Parse-Application-Id>
+                        <X-Parse-REST-API-Key>
+                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Parse/RestApiKey"/>
+                        </X-Parse-REST-API-Key>
+                    </Header>
+                </ns:Parameters>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>745</pd:x>
+        <pd:y>224</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <fault>localname=JSONRestException namespace=http://schemas.tibco.com/bw/plugins/xml/5.0/RESTJSONExceptions</fault>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Error_Logger">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>856</pd:x>
+        <pd:y>224</pd:y>
+        <config>
+            <processName>/CLEP/Error_Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <event>
+                <Description>
+                    <xsl:value-of select="&quot;Error Involing Invoke rest&quot;"/>
+                </Description>
+                <time_stamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </time_stamp>
+                <Stack_Trace>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/StackTrace"/>
+                </Stack_Trace>
+                <Error_Message>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/Msg"/>
+                </Error_Message>
+                <Message_Code>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/MsgCode"/>
+                </Message_Code>
+                <Process_Stack>
+                    <xsl:value-of select="$_error/ns2:ErrorReport/ProcessStack"/>
+                </Process_Stack>
+            </event>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Start_logger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>End_Loggger</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start_logger</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>End_Loggger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Error_Logger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Error_Logger</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
