@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>Processes/InboundProcess/parse_post.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>150</pd:startX>
+    <pd:startY>64</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>450</pd:endX>
+    <pd:endY>64</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1382937011381</pd:targetNamespace>
+    <pd:activity name="Invoke REST API">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>299</pd:x>
+        <pd:y>80</pd:y>
+        <config>
+            <restMethodUI>POST</restMethodUI>
+            <restResponseType>JSON</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string"/>
+                                        <xsd:element name="X-Parse-REST-API-Key" type="xsd:string"/>
+                                        <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <URI>
+                    <xsl:value-of select="&quot;https://api.parse.com/1/classes/checkDB&quot;"/>
+                </URI>
+                <ns:Parameters>
+                    <Header>
+                        <X-Parse-Application-Id>
+                            <xsl:value-of select="&quot;aPK3VxV3phJ2vPm3YumNSJ3u2NNXRsWnYUk8o1N9&quot;"/>
+                        </X-Parse-Application-Id>
+                        <X-Parse-REST-API-Key>
+                            <xsl:value-of select="&quot;zMEwtBDsOHFWb5KSEbfJIs6kKgFkqK8tMso25uN8&quot;"/>
+                        </X-Parse-REST-API-Key>
+                        <Content-Type>
+                            <xsl:value-of select="&quot;json&quot;"/>
+                        </Content-Type>
+                    </Header>
+                    <Body>
+                        <Text>
+                            <type>
+                                <xsl:value-of select="&quot;json&quot;"/>
+                            </type>
+                            <content>
+                                <xsl:value-of select="'{&quot;message&quot;:&quot;bw&quot;,&quot;name&quot;:&quot;nw&quot;}'"/>
+                            </content>
+                        </Text>
+                    </Body>
+                </ns:Parameters>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
