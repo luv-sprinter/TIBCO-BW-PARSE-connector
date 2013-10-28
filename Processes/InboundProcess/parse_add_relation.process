@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions">
-    <pd:name>Processes/InboundProcess/parse_get.process</pd:name>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>Processes/InboundProcess/parse_add_relation.process</pd:name>
     <pd:startName>Start</pd:startName>
-    <pd:startX>150</pd:startX>
-    <pd:startY>64</pd:startY>
+    <pd:startX>93</pd:startX>
+    <pd:startY>69</pd:startY>
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
-    <pd:endX>746</pd:endX>
-    <pd:endY>56</pd:endY>
+    <pd:endX>891</pd:endX>
+    <pd:endY>59</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1382937011381</pd:targetNamespace>
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>399</pd:x>
-        <pd:y>66</pd:y>
+        <pd:x>379</pd:x>
+        <pd:y>74</pd:y>
         <config>
-            <restMethodUI>GET</restMethodUI>
+            <restMethodUI>PUT</restMethodUI>
             <restResponseType>JSON</restResponseType>
             <authChoiceUI>No Authentication</authChoiceUI>
             <restInputReferNode>
@@ -77,7 +77,7 @@
         <pd:inputBindings>
             <ns:ActivityInput>
                 <URI>
-                    <xsl:value-of select="&quot;https://api.parse.com/1/classes/checkDB/qagF5ARDq3&quot;"/>
+                    <xsl:value-of select="&quot;https://api.parse.com/1/classes/checkcounter/ggudNeWCq0&quot;"/>
                 </URI>
                 <ns:Parameters>
                     <Header>
@@ -96,6 +96,9 @@
                             <type>
                                 <xsl:value-of select="&quot;json&quot;"/>
                             </type>
+                            <content>
+                                <xsl:value-of select="'{&quot;opponents&quot;:{&quot;__op&quot;:&quot;AddRelation&quot;,&quot;objects&quot;:[{&quot;__type&quot;:&quot;Pointer&quot;,&quot;className&quot;:&quot;checkcounter&quot;,&quot;objectId&quot;:&quot;GlU9xAd6Go&quot;}]}}'"/>
+                            </content>
                         </Text>
                     </Body>
                 </ns:Parameters>
@@ -105,18 +108,18 @@
     <pd:activity name="start_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>264</pd:x>
-        <pd:y>112</pd:y>
+        <pd:x>224</pd:x>
+        <pd:y>67</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute name="timestamp">
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute name="description">
-                    <xsl:value-of select="&quot;getting the data from the parse database&quot;"/>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
+                    <xsl:value-of select="&quot;trying to add relation to the parse database&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
@@ -124,26 +127,37 @@
     <pd:activity name="End_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>556</pd:x>
-        <pd:y>64</pd:y>
+        <pd:x>500</pd:x>
+        <pd:y>65</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute name="timestamp">
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute name="description">
-                    <xsl:value-of select="&quot;got the data from parse successfully&quot;"/>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
+                    <xsl:value-of select="&quot;relation added to the parse successfully&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
     </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>449</pd:x>
+        <pd:y>211</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
     <pd:activity name="Error_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>691</pd:x>
+        <pd:x>633</pd:x>
         <pd:y>188</pd:y>
         <config>
             <processName>/CLEP/Error_Logger.process</processName>
@@ -151,7 +165,7 @@
         <pd:inputBindings>
             <event>
                 <Description>
-                    <xsl:value-of select="&quot;error while processing get request&quot;"/>
+                    <xsl:value-of select="&quot;error while processing add relation method&quot;"/>
                 </Description>
                 <time_stamp>
                     <xsl:value-of select="current-dateTime()"/>
@@ -170,17 +184,6 @@
                 </Process_Stack>
             </event>
         </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="Catch">
-        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
-        <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>492</pd:x>
-        <pd:y>235</pd:y>
-        <pd:handler>true</pd:handler>
-        <config>
-            <catchAll>true</catchAll>
-        </config>
-        <pd:inputBindings/>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
