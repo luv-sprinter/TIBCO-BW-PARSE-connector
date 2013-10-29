@@ -17,12 +17,7 @@ TIBCO ACTIVEMATRIX BUSINESSWORKS PLUG-IN FOR REST AND JSON
 How to Run this application
 First Set The URL of PARSE >> URL to your app of parse
 
-You could see four processes: 
-1)parse_get
-2)parse_post
-3)parse_delete
-4)parse_get
-
+you could see all the processes that could be implemented for the operations that parse.com provides using REST API.
 
 If you would like to contribute to this project. you can add other parse methods as BW process to this project and send us pull request. 
 
