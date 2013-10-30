@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd7" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd5">
-    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd5" schemaLocation="/Resources/Schemas/parse_add_relation.xsd"/>
-    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd7" schemaLocation="/Resources/Schemas/parse_counter.xsd"/>
-    <pd:name>Processes/InboundProcess/parse_counter.process</pd:name>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>Processes/InboundProcess/Deleting_Files.process</pd:name>
     <pd:startName>Start</pd:startName>
-    <pd:startType ref="pfx2:root"/>
-    <pd:startX>139</pd:startX>
-    <pd:startY>71</pd:startY>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Imagename" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>150</pd:startX>
+    <pd:startY>62</pd:startY>
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
-    <pd:endX>820</pd:endX>
-    <pd:endY>71</pd:endY>
+    <pd:endX>688</pd:endX>
+    <pd:endY>62</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
-    <pd:targetNamespace>http://xmlns.example.com/1382937011381</pd:targetNamespace>
+    <pd:targetNamespace>http://xmlns.example.com/1382954554467</pd:targetNamespace>
     <pd:activity name="Catch">
         <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
         <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>574</pd:x>
-        <pd:y>214</pd:y>
+        <pd:x>449</pd:x>
+        <pd:y>259</pd:y>
         <pd:handler>true</pd:handler>
         <config>
-            <catchAll>true</catchAll>
+            <fault>localname=JSONRestException namespace=http://schemas.tibco.com/bw/plugins/xml/5.0/RESTJSONExceptions</fault>
         </config>
         <pd:inputBindings/>
     </pd:activity>
     <pd:activity name="End_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>643</pd:x>
-        <pd:y>71</pd:y>
+        <pd:x>544</pd:x>
+        <pd:y>62</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
+                <xsl:attribute name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
-                    <xsl:value-of select="&quot;count method worked successfully&quot;"/>
+                <xsl:attribute name="description">
+                    <xsl:value-of select="&quot;End logging successful&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
@@ -47,15 +53,15 @@
     <pd:activity name="Error_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>751</pd:x>
-        <pd:y>214</pd:y>
+        <pd:x>771</pd:x>
+        <pd:y>259</pd:y>
         <config>
             <processName>/CLEP/Error_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
                 <Description>
-                    <xsl:value-of select="&quot;error while processing counter method(auto-increment)&quot;"/>
+                    <xsl:value-of select="&quot;error logging successful&quot;"/>
                 </Description>
                 <time_stamp>
                     <xsl:value-of select="current-dateTime()"/>
@@ -78,10 +84,10 @@
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>434</pd:x>
-        <pd:y>71</pd:y>
+        <pd:x>402</pd:x>
+        <pd:y>62</pd:y>
         <config>
-            <restMethodUI>PUT</restMethodUI>
+            <restMethodUI>DELETE</restMethodUI>
             <restResponseType>JSON</restResponseType>
             <authChoiceUI>No Authentication</authChoiceUI>
             <restInputReferNode>
@@ -98,9 +104,8 @@
                             <xsd:element name="Header" minOccurs="0">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string"/>
-                                        <xsd:element name="X-Parse-REST-API-Key" type="xsd:string"/>
-                                        <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="X-Parse-Master-Key" type="xsd:string"/>
+                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string" minOccurs="0"/>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
@@ -141,56 +146,57 @@
         <pd:inputBindings>
             <ns:ActivityInput>
                 <URI>
-                    <xsl:value-of select="concat(&quot;https://api.parse.com/1/classes/&quot;,$Start/pfx2:root/pfx2:Classname,&quot;/&quot;,$Start/pfx2:root/pfx2:ObjectID)"/>
+                    <xsl:value-of select="concat(&quot;https://api.parse.com/1/files/&quot;,$Start/root/Imagename)"/>
                 </URI>
                 <ns:Parameters>
                     <Header>
+                        <X-Parse-Master-Key>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/MasterKey"/>
+                        </X-Parse-Master-Key>
                         <X-Parse-Application-Id>
                             <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/ApplicationID"/>
                         </X-Parse-Application-Id>
-                        <X-Parse-REST-API-Key>
-                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/RestApiKey"/>
-                        </X-Parse-REST-API-Key>
-                        <Content-Type>
-                            <xsl:value-of select="&quot;json&quot;"/>
-                        </Content-Type>
                     </Header>
                     <Body>
                         <Text>
                             <type>
                                 <xsl:value-of select="&quot;json&quot;"/>
                             </type>
-                            <content>
-                                <xsl:value-of select="concat( '{&quot;empid&quot;:{&quot;__op&quot;:&quot;', $Start/pfx2:root/pfx2:empid[1]/pfx2:__op,'&quot;,&quot;amount&quot;:',$Start/pfx2:root/pfx2:empid[1]/pfx2:amount,'}}')"/>
-                            </content>
                         </Text>
                     </Body>
                 </ns:Parameters>
             </ns:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="start_Logger">
+    <pd:activity name="Start_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>243</pd:x>
-        <pd:y>71</pd:y>
+        <pd:x>282</pd:x>
+        <pd:y>62</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
+                <xsl:attribute name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
-                    <xsl:value-of select="&quot;trying to auto increment an attribute in the parse database using counter method&quot;"/>
+                <xsl:attribute name="description">
+                    <xsl:value-of select="&quot;start logging successful&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
-        <pd:to>start_Logger</pd:to>
+        <pd:to>Start_Logger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start_Logger</pd:from>
+        <pd:to>Invoke REST API</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
@@ -198,6 +204,13 @@
     <pd:transition>
         <pd:from>Invoke REST API</pd:from>
         <pd:to>End_Logger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>End_Logger</pd:from>
+        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
@@ -212,20 +225,6 @@
     <pd:transition>
         <pd:from>Error_Logger</pd:from>
         <pd:to>End</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>End_Logger</pd:from>
-        <pd:to>End</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>start_Logger</pd:from>
-        <pd:to>Invoke REST API</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>

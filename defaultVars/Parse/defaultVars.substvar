@@ -10,6 +10,14 @@
 			<modTime>1383041329985</modTime>
 		</globalVariable>
 		<globalVariable>
+			<name>MasterKey</name>
+			<value>hcAG7Zhow7cGOXis60u5SdYg8FMWgflIFd2nClZ5</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1383122588808</modTime>
+		</globalVariable>
+		<globalVariable>
 			<name>RestApiKey</name>
 			<value>zMEwtBDsOHFWb5KSEbfJIs6kKgFkqK8tMso25uN8</value>
 			<deploymentSettable>true</deploymentSettable>
