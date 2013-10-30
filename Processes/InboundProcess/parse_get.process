@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd9">
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd9">
     <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd9" schemaLocation="/Resources/Schemas/DeleteandGetIP.xsd"/>
     <pd:name>Processes/InboundProcess/parse_get.process</pd:name>
     <pd:startName>Start</pd:startName>
@@ -145,10 +145,10 @@
                 <ns:Parameters>
                     <Header>
                         <X-Parse-Application-Id>
-                            <xsl:value-of select="&quot;aPK3VxV3phJ2vPm3YumNSJ3u2NNXRsWnYUk8o1N9&quot;"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/ApplicationID"/>
                         </X-Parse-Application-Id>
                         <X-Parse-REST-API-Key>
-                            <xsl:value-of select="&quot;zMEwtBDsOHFWb5KSEbfJIs6kKgFkqK8tMso25uN8&quot;"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/RestApiKey"/>
                         </X-Parse-REST-API-Key>
                         <Content-Type>
                             <xsl:value-of select="&quot;json&quot;"/>
