@@ -1,21 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd9" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd7">
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd7" schemaLocation="/Resources/Schemas/parse_counter.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd9" schemaLocation="/Resources/Schemas/DeleteandGetIP.xsd"/>
     <pd:name>Processes/InboundProcess/parse_delete.process</pd:name>
     <pd:startName>Start</pd:startName>
+    <pd:startType ref="pfx2:root"/>
     <pd:startX>107</pd:startX>
     <pd:startY>69</pd:startY>
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
     <pd:endX>777</pd:endX>
-    <pd:endY>85</pd:endY>
+    <pd:endY>69</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
     <pd:targetNamespace>http://xmlns.example.com/1382937011381</pd:targetNamespace>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>360</pd:x>
+        <pd:y>179</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="End_Logger">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>445</pd:x>
+        <pd:y>69</pd:y>
+        <config>
+            <processName>/CLEP/Common_Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <event>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
+                    <xsl:value-of select="current-dateTime()"/>
+                </xsl:attribute>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
+                    <xsl:value-of select="&quot;deleted the data from parse successfully&quot;"/>
+                </xsl:attribute>
+            </event>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Error_Logger">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>569</pd:x>
+        <pd:y>179</pd:y>
+        <config>
+            <processName>/CLEP/Error_Logger.process</processName>
+        </config>
+        <pd:inputBindings>
+            <event>
+                <Description>
+                    <xsl:value-of select="&quot;error while processing delete request&quot;"/>
+                </Description>
+                <time_stamp>
+                    <xsl:value-of select="current-dateTime()"/>
+                </time_stamp>
+                <Stack_Trace>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/StackTrace"/>
+                </Stack_Trace>
+                <Error_Message>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/Msg"/>
+                </Error_Message>
+                <Message_Code>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/MsgCode"/>
+                </Message_Code>
+                <Process_Stack>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/ProcessStack"/>
+                </Process_Stack>
+            </event>
+        </pd:inputBindings>
+    </pd:activity>
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>322</pd:x>
-        <pd:y>74</pd:y>
+        <pd:x>324</pd:x>
+        <pd:y>69</pd:y>
         <config>
             <restMethodUI>DELETE</restMethodUI>
             <restResponseType>JSON</restResponseType>
@@ -77,15 +141,15 @@
         <pd:inputBindings>
             <ns:ActivityInput>
                 <URI>
-                    <xsl:value-of select="&quot;https://api.parse.com/1/classes/checkDB/gQsoUkXiJR&quot;"/>
+                    <xsl:value-of select="concat(&quot;https://api.parse.com/1/classes/&quot;,$Start/pfx2:root/pfx2:Classname,&quot;/&quot;,$Start/pfx2:root/pfx2:ObjectID)"/>
                 </URI>
                 <ns:Parameters>
                     <Header>
                         <X-Parse-Application-Id>
-                            <xsl:value-of select="&quot;aPK3VxV3phJ2vPm3YumNSJ3u2NNXRsWnYUk8o1N9&quot;"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/ApplicationID"/>
                         </X-Parse-Application-Id>
                         <X-Parse-REST-API-Key>
-                            <xsl:value-of select="&quot;zMEwtBDsOHFWb5KSEbfJIs6kKgFkqK8tMso25uN8&quot;"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/RestApiKey"/>
                         </X-Parse-REST-API-Key>
                         <Content-Type>
                             <xsl:value-of select="&quot;json&quot;"/>
@@ -106,7 +170,7 @@
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
         <pd:x>230</pd:x>
-        <pd:y>91</pd:y>
+        <pd:y>69</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
@@ -118,67 +182,6 @@
                 <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
                     <xsl:value-of select="&quot;deleting the data from the parse database&quot;"/>
                 </xsl:attribute>
-            </event>
-        </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="End_Logger">
-        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
-        <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>445</pd:x>
-        <pd:y>76</pd:y>
-        <config>
-            <processName>/CLEP/Common_Logger.process</processName>
-        </config>
-        <pd:inputBindings>
-            <event>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
-                    <xsl:value-of select="current-dateTime()"/>
-                </xsl:attribute>
-                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
-                    <xsl:value-of select="&quot;deleted the data from parse successfully&quot;"/>
-                </xsl:attribute>
-            </event>
-        </pd:inputBindings>
-    </pd:activity>
-    <pd:activity name="Catch">
-        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
-        <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>360</pd:x>
-        <pd:y>191</pd:y>
-        <pd:handler>true</pd:handler>
-        <config>
-            <catchAll>true</catchAll>
-        </config>
-        <pd:inputBindings/>
-    </pd:activity>
-    <pd:activity name="Error_Logger">
-        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
-        <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>569</pd:x>
-        <pd:y>179</pd:y>
-        <config>
-            <processName>/CLEP/Error_Logger.process</processName>
-        </config>
-        <pd:inputBindings>
-            <event>
-                <Description>
-                    <xsl:value-of select="&quot;error while processing delete request&quot;"/>
-                </Description>
-                <time_stamp>
-                    <xsl:value-of select="current-dateTime()"/>
-                </time_stamp>
-                <Stack_Trace>
-                    <xsl:value-of select="$_error/ns1:ErrorReport/StackTrace"/>
-                </Stack_Trace>
-                <Error_Message>
-                    <xsl:value-of select="$_error/ns1:ErrorReport/Msg"/>
-                </Error_Message>
-                <Message_Code>
-                    <xsl:value-of select="$_error/ns1:ErrorReport/MsgCode"/>
-                </Message_Code>
-                <Process_Stack>
-                    <xsl:value-of select="$_error/ns1:ErrorReport/ProcessStack"/>
-                </Process_Stack>
             </event>
         </pd:inputBindings>
     </pd:activity>
