@@ -1,42 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://www.tibco.com/pe/EngineTypes" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <pd:name>Processes/InboundProcess/ResetPassword.process</pd:name>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd4" xmlns:pfx="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd5">
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd4" schemaLocation="/Resources/Schemas/array_add.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/schemas/TIBCO-BW-PARSE-connector/Resources/Schemas/Schema.xsd5" schemaLocation="/Resources/Schemas/parse_add_relation.xsd"/>
+    <pd:name>Processes/InboundProcess/parse_relation.process</pd:name>
     <pd:startName>Start</pd:startName>
-    <pd:startX>176</pd:startX>
-    <pd:startY>61</pd:startY>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Classname" type="xsd:string"/>
+                    <xsd:element name="ObjectID" type="xsd:string"/>
+                    <xsd:element ref="pfx:root"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>34</pd:startX>
+    <pd:startY>59</pd:startY>
     <pd:returnBindings/>
     <pd:endName>End</pd:endName>
-    <pd:endX>818</pd:endX>
-    <pd:endY>61</pd:endY>
+    <pd:endX>891</pd:endX>
+    <pd:endY>59</pd:endY>
     <pd:errorSchemas/>
     <pd:processVariables/>
-    <pd:targetNamespace>http://xmlns.example.com/1382950983080</pd:targetNamespace>
+    <pd:targetNamespace>http://xmlns.example.com/1382937011381</pd:targetNamespace>
     <pd:activity name="Catch">
         <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
         <pd:resourceType>ae.activities.catch</pd:resourceType>
-        <pd:x>462</pd:x>
-        <pd:y>158</pd:y>
+        <pd:x>537</pd:x>
+        <pd:y>183</pd:y>
         <pd:handler>true</pd:handler>
         <config>
-            <fault>localname=JSONRestException namespace=http://schemas.tibco.com/bw/plugins/xml/5.0/RESTJSONExceptions</fault>
+            <catchAll>true</catchAll>
         </config>
         <pd:inputBindings/>
     </pd:activity>
-    <pd:activity name="EndLogger">
+    <pd:activity name="ConvertXML-String">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>210</pd:x>
+        <pd:y>59</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>false</validateInput>
+            <textEncoding>UTF-8</textEncoding>
+            <term ref="pfx:root"/>
+        </config>
+        <pd:inputBindings>
+            <xsl:copy-of select="$Start/root/pfx:root"/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="End_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>686</pd:x>
-        <pd:y>61</pd:y>
+        <pd:x>727</pd:x>
+        <pd:y>59</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute name="timestamp">
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute name="description">
-                    <xsl:value-of select="&quot;Successfully completed reset password&quot;"/>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
+                    <xsl:value-of select="&quot;relation added to the parse successfully&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
@@ -44,30 +72,30 @@
     <pd:activity name="Error_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>644</pd:x>
-        <pd:y>158</pd:y>
+        <pd:x>695</pd:x>
+        <pd:y>183</pd:y>
         <config>
             <processName>/CLEP/Error_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
                 <Description>
-                    <xsl:value-of select="&quot;Error Invoking Rest&quot;"/>
+                    <xsl:value-of select="&quot;error while processing add relation method&quot;"/>
                 </Description>
                 <time_stamp>
                     <xsl:value-of select="current-dateTime()"/>
                 </time_stamp>
                 <Stack_Trace>
-                    <xsl:value-of select="$_error/ns2:ErrorReport/StackTrace"/>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/StackTrace"/>
                 </Stack_Trace>
                 <Error_Message>
-                    <xsl:value-of select="$_error/ns2:ErrorReport/Msg"/>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/Msg"/>
                 </Error_Message>
                 <Message_Code>
-                    <xsl:value-of select="$_error/ns2:ErrorReport/MsgCode"/>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/MsgCode"/>
                 </Message_Code>
                 <Process_Stack>
-                    <xsl:value-of select="$_error/ns2:ErrorReport/ProcessStack"/>
+                    <xsl:value-of select="$_error/ns1:ErrorReport/ProcessStack"/>
                 </Process_Stack>
             </event>
         </pd:inputBindings>
@@ -75,10 +103,10 @@
     <pd:activity name="Invoke REST API">
         <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
         <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
-        <pd:x>511</pd:x>
-        <pd:y>61</pd:y>
+        <pd:x>618</pd:x>
+        <pd:y>59</pd:y>
         <config>
-            <restMethodUI>POST</restMethodUI>
+            <restMethodUI>PUT</restMethodUI>
             <restResponseType>JSON</restResponseType>
             <authChoiceUI>No Authentication</authChoiceUI>
             <restInputReferNode>
@@ -95,8 +123,9 @@
                             <xsd:element name="Header" minOccurs="0">
                                 <xsd:complexType>
                                     <xsd:sequence>
-                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string" minOccurs="0"/>
+                                        <xsd:element name="X-Parse-Application-Id" type="xsd:string"/>
                                         <xsd:element name="X-Parse-REST-API-Key" type="xsd:string"/>
+                                        <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
                                     </xsd:sequence>
                                 </xsd:complexType>
                             </xsd:element>
@@ -137,16 +166,19 @@
         <pd:inputBindings>
             <ns:ActivityInput>
                 <URI>
-                    <xsl:value-of select="&quot;https://api.parse.com/1/requestPasswordReset&quot;"/>
+                    <xsl:value-of select="concat(&quot;https://api.parse.com/1/classes/&quot;,$Start/root/Classname,&quot;/&quot;,$Start/root/ObjectID)"/>
                 </URI>
                 <ns:Parameters>
                     <Header>
                         <X-Parse-Application-Id>
-                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Parse/ApplicationID"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/ApplicationID"/>
                         </X-Parse-Application-Id>
                         <X-Parse-REST-API-Key>
-                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Parse/RestApiKey"/>
+                            <xsl:value-of select="$_globalVariables/ns2:GlobalVariables/Parse/RestApiKey"/>
                         </X-Parse-REST-API-Key>
+                        <Content-Type>
+                            <xsl:value-of select="&quot;json&quot;"/>
+                        </Content-Type>
                     </Header>
                     <Body>
                         <Text>
@@ -154,7 +186,7 @@
                                 <xsl:value-of select="&quot;json&quot;"/>
                             </type>
                             <content>
-                                <xsl:value-of select="'{&quot;email&quot;:&quot;pkpramod005@gmail.com&quot;}'"/>
+                                <xsl:value-of select="substring(substring($Render-JSON/ns:ActivityOutputClass/jsonString, 9), 1, string-length(substring($Render-JSON/ns:ActivityOutputClass/jsonString, 9))-1)"/>
                             </content>
                         </Text>
                     </Body>
@@ -162,49 +194,85 @@
             </ns:ActivityInput>
         </pd:inputBindings>
     </pd:activity>
-    <pd:activity name="StartLogger">
+    <pd:activity name="RemoveNamespace">
+        <pd:type>com.tibco.plugin.xml.XMLTransformActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLTransformActivity</pd:resourceType>
+        <pd:x>320</pd:x>
+        <pd:y>59</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <engine>TibcoXML</engine>
+            <stylesheet>/Resources/XSLTfile/XSLT File.xslt</stylesheet>
+        </config>
+        <pd:inputBindings>
+            <textInput>
+                <xmlString>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$ConvertXML-String/xmlString"/>
+                </xmlString>
+            </textInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render JSON">
+        <pd:type>com.tibco.plugin.json.activities.JSONRenderActivity</pd:type>
+        <pd:resourceType>ae.activities.JSONRenderActivity</pd:resourceType>
+        <pd:x>484</pd:x>
+        <pd:y>59</pd:y>
+        <config>
+            <SchemaType>generic</SchemaType>
+            <BadgerfishCheck>false</BadgerfishCheck>
+            <ActivityInputEditor/>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInputClass>
+                <xmlString>
+                    <xsl:value-of select="$RemoveNamespace/xmlString"/>
+                </xmlString>
+            </ns:ActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="start_Logger">
         <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
         <pd:resourceType>ae.process.subprocess</pd:resourceType>
-        <pd:x>318</pd:x>
-        <pd:y>61</pd:y>
+        <pd:x>118</pd:x>
+        <pd:y>59</pd:y>
         <config>
             <processName>/CLEP/Common_Logger.process</processName>
         </config>
         <pd:inputBindings>
             <event>
-                <xsl:attribute name="timestamp">
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="timestamp">
                     <xsl:value-of select="current-dateTime()"/>
                 </xsl:attribute>
-                <xsl:attribute name="description">
-                    <xsl:value-of select="&quot;Successfully started Reset Password&quot;"/>
+                <xsl:attribute xmlns:xsl="http://www.w3.org/1999/XSL/Transform" name="description">
+                    <xsl:value-of select="&quot;trying to add relation to the parse database&quot;"/>
                 </xsl:attribute>
             </event>
         </pd:inputBindings>
     </pd:activity>
     <pd:transition>
         <pd:from>Start</pd:from>
-        <pd:to>StartLogger</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>EndLogger</pd:from>
-        <pd:to>End</pd:to>
-        <pd:lineType>Default</pd:lineType>
-        <pd:lineColor>-16777216</pd:lineColor>
-        <pd:conditionType>always</pd:conditionType>
-    </pd:transition>
-    <pd:transition>
-        <pd:from>StartLogger</pd:from>
-        <pd:to>Invoke REST API</pd:to>
+        <pd:to>start_Logger</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
     </pd:transition>
     <pd:transition>
         <pd:from>Invoke REST API</pd:from>
-        <pd:to>EndLogger</pd:to>
+        <pd:to>End_Logger</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>start_Logger</pd:from>
+        <pd:to>ConvertXML-String</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>End_Logger</pd:from>
+        <pd:to>End</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>
@@ -219,6 +287,27 @@
     <pd:transition>
         <pd:from>Error_Logger</pd:from>
         <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ConvertXML-String</pd:from>
+        <pd:to>RemoveNamespace</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RemoveNamespace</pd:from>
+        <pd:to>Render JSON</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render JSON</pd:from>
+        <pd:to>Invoke REST API</pd:to>
         <pd:lineType>Default</pd:lineType>
         <pd:lineColor>-16777216</pd:lineColor>
         <pd:conditionType>always</pd:conditionType>

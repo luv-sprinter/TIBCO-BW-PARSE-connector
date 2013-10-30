@@ -3,19 +3,19 @@
 	<globalVariables>
 		<globalVariable>
 			<name>ApplicationID</name>
-			<value>TFotipy0dcAe4N29BmRi7MUgi64lGBjnVeKeoi0R</value>
+			<value>aPK3VxV3phJ2vPm3YumNSJ3u2NNXRsWnYUk8o1N9</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1382949477269</modTime>
+			<modTime>1383041329985</modTime>
 		</globalVariable>
 		<globalVariable>
 			<name>RestApiKey</name>
-			<value>YQQUcttyO65rroQI9SsniYKZ33KjsRBBg96Q75Bo</value>
+			<value>zMEwtBDsOHFWb5KSEbfJIs6kKgFkqK8tMso25uN8</value>
 			<deploymentSettable>true</deploymentSettable>
 			<serviceSettable>false</serviceSettable>
 			<type>String</type>
-			<modTime>1382949490518</modTime>
+			<modTime>1383041360449</modTime>
 		</globalVariable>
 	</globalVariables>
 </repository>
